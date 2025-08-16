@@ -1,30 +1,23 @@
-// src/ForceCloseOreUI.cpp
 #include "api/memory/Hook.h"
 #include <cstdio>
 
-// NOTE: Keep the hook at GLOBAL scope (not inside a function).
-// The AUTO variant will register/unregister automatically.
-
+// Declare hook at global scope — never inside a function/struct
 SKY_AUTO_STATIC_HOOK(
-    SendChatHook,                          // DefType (any unique name)
+    SendChatHook,                          // DefType (unique name)
     memory::HookPriority::Normal,          // priority
-    std::initializer_list<const char*>({   // identifier: signature(s)
-        // Put a valid signature for the "send chat" function here.
-        // This is just a placeholder pattern; adjust if needed.
-        "48 89 5C 24 ? 55 53 56 57 41 54 41 55 41 56 41 57 48 8D ? ? ? ? ? 48 81 EC ? ? ? ? 48 8B ? ? ? ? ? 48 33 ? 48 89"
+    std::initializer_list<const char*>({
+        // Replace with the correct sendChat signature for your version
+        "48 89 5C 24 ? 55 53 56 57 41 54 41 55 41 56 41 57 48 8D"
     }),
-    void,                                  // return type of target
-    void* player, const char* msg          // params of target
+    void,                                  // return type
+    void* player, const char* msg          // parameters
 ) {
-    // Example behavior: replace any outgoing message with our own.
-    // Call the original with our message:
-    origin(player, "[Levi] Hello from mod!");
+    // Example hook: override message
+    origin(player, "[Mod] Hello from ForceCloseOreUI!");
 }
 
-// Entry point required by the loader. Leave empty; AUTO hook already registers.
+// Entry point
 extern "C" [[gnu::visibility("default")]]
 void mod_init() {
-    // Nothing needed here because SKY_AUTO_STATIC_HOOK auto-registers the hook.
-    // If you want logs:
-    // std::puts("[ForceCloseOreUI] mod_init");
+    std::puts("[ForceCloseOreUI] mod_init OK");
 }
